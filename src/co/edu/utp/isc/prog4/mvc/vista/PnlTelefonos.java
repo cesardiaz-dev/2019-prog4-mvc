@@ -48,7 +48,20 @@ public class PnlTelefonos extends javax.swing.JPanel {
             new String [] {
                 "Tipo", "Numero"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblTelefonos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblTelefonosMouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblTelefonos);
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -69,6 +82,12 @@ public class PnlTelefonos extends javax.swing.JPanel {
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         formulario.cambiarTarjeta("formulario");
     }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void tblTelefonosMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTelefonosMouseReleased
+        if(evt.getClickCount() >= 2){
+            formulario.mostrarTelefono(telefonos.get(tblTelefonos.getSelectedRow()));
+        }
+    }//GEN-LAST:event_tblTelefonosMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

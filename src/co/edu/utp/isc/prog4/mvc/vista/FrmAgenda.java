@@ -73,6 +73,11 @@ public class FrmAgenda extends javax.swing.JFrame implements FormularioVisitador
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
         jPanel4.add(btnEliminar);
 
         btnGuardarArchivo.setText("Enviar Archivo");
@@ -210,6 +215,14 @@ public class FrmAgenda extends javax.swing.JFrame implements FormularioVisitador
         AgendaControlador.getInstance().guardarContactosArchivo();
     }//GEN-LAST:event_btnGuardarArchivoActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if(tblContactos.getSelectedRow() != -1){
+            AgendaControlador.getInstance().eliminarContacto(tblContactos.getSelectedRow());
+            btnNuevoContactoActionPerformed(null);
+            cargarLista();
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -305,5 +318,11 @@ public class FrmAgenda extends javax.swing.JFrame implements FormularioVisitador
                 contactos.get(i).getAlias()
             });
         }
+    }
+
+    @Override
+    public void mostrarTelefono(Telefono telefono) {
+        cambiarTarjeta("formulario");
+        pnlNuevoTelefono.mostrarDatos(telefono.getTipo(), telefono.getNumero());
     }
 }

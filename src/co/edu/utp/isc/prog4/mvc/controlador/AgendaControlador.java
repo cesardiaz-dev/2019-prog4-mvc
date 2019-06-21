@@ -58,4 +58,8 @@ public class AgendaControlador {
                 .guardarContactos(contactos);
     }
 
+    public void eliminarContacto(int posicion) {
+        contactos.remove(posicion);
+    }
+
 }

@@ -119,6 +119,11 @@ public class PnlNuevoTelefono extends javax.swing.JPanel {
             cmbTipo.addItem(tipo);
         }
     }
+
+    void mostrarDatos(TipoTelefono tipo, String numero) {
+        cmbTipo.setSelectedItem(tipo);
+        txtNumero.setText(numero);
+    }
     
     
 }

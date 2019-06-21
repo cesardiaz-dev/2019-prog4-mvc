@@ -5,6 +5,7 @@
  */
 package co.edu.utp.isc.prog4.mvc.vista;
 
+import co.edu.utp.isc.prog4.mvc.modelo.Telefono;
 import co.edu.utp.isc.prog4.mvc.modelo.TipoTelefono;
 
 /**
@@ -16,4 +17,6 @@ public interface FormularioVisitador {
     void cambiarTarjeta(String tarjeta);
 
     void agregarTelefono(TipoTelefono tipoTelefono, String numero);
+
+    public void mostrarTelefono(Telefono get);
 }
