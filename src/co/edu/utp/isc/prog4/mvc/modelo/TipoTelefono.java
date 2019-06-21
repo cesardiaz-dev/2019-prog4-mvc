@@ -10,5 +10,5 @@ package co.edu.utp.isc.prog4.mvc.modelo;
  * @author utp
  */
 public enum TipoTelefono {
-    PERSONAL, TRABAJO, HOGAR 
+    PERSONAL, TRABAJO, HOGAR
 }

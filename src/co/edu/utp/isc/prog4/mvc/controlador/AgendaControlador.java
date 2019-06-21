@@ -7,6 +7,7 @@ package co.edu.utp.isc.prog4.mvc.controlador;
 
 import co.edu.utp.isc.prog4.mvc.modelo.Contacto;
 import co.edu.utp.isc.prog4.mvc.modelo.Telefono;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class AgendaControlador {
     private static AgendaControlador instance;
 
     private AgendaControlador() {
+        contactos = ArchivoControlador.getInstance().cargarContactos();
     }
 
     public static AgendaControlador getInstance() {
@@ -26,12 +28,34 @@ public class AgendaControlador {
         }
         return instance;
     }
-    
-    private List<Contacto> contactos;
-    
 
-    public void agregarContacto(String nombre, String alias, List<Telefono> telefonos) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private List<Contacto> contactos;
+
+    public List<Contacto> getContactos() {
+        return contactos;
+    }
+
+    public Contacto getContacto(int posicion) {
+        return contactos.get(posicion);
+    }
+
+    public void agregarContacto(int posicion, String nombre, String alias, List<Telefono> telefonos) {
+        if (contactos == null) {
+            contactos = new ArrayList<>();
+        }
+
+        Contacto contacto = new Contacto(nombre, alias);
+        contacto.setTelefonos(telefonos);
+        if (posicion == -1) {
+            contactos.add(contacto);
+        } else {
+            contactos.set(posicion, contacto);
+        }
+    }
+
+    public void guardarContactosArchivo() {
+        ArchivoControlador.getInstance()
+                .guardarContactos(contactos);
     }
 
 }

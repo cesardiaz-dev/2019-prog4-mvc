@@ -5,11 +5,13 @@
  */
 package co.edu.utp.isc.prog4.mvc.modelo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author utp
  */
-public class Telefono {
+public class Telefono implements Serializable {
 
     private TipoTelefono tipo;
     private String numero;

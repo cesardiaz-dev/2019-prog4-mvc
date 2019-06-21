@@ -5,6 +5,7 @@
  */
 package co.edu.utp.isc.prog4.mvc.modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author utp
  */
-public class Contacto {
+public class Contacto implements Serializable {
 
     private String nombre;
     private String alias;

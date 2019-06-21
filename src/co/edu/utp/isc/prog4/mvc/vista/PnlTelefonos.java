@@ -6,7 +6,10 @@
 package co.edu.utp.isc.prog4.mvc.vista;
 
 import co.edu.utp.isc.prog4.mvc.modelo.Telefono;
+import co.edu.utp.isc.prog4.mvc.modelo.TipoTelefono;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -31,49 +34,87 @@ public class PnlTelefonos extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblTelefonos = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnNuevo = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Telefonos"));
         setLayout(new java.awt.BorderLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTelefonos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Tipo", "Numero"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblTelefonos);
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton1.setText("Nuevo Telefono");
-        jPanel1.add(jButton1);
+        btnNuevo.setText("Nuevo Telefono");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnNuevo);
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        formulario.cambiarTarjeta("formulario");
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnNuevo;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblTelefonos;
     // End of variables declaration//GEN-END:variables
+    private List<Telefono> telefonos;
+    private FormularioVisitador formulario;
+
+    public void setFormulario(FormularioVisitador formulario) {
+        this.formulario = formulario;
+    }
 
     public void limpiar() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        telefonos = new ArrayList<>();
+    }
+    
+    public void setLista(List<Telefono> lista) {
+        telefonos = lista;
+        cargarLista();
     }
 
     public List<Telefono> getLista() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return telefonos;
+    }
+
+    public void cargarLista() {
+        int numero = ((DefaultTableModel)tblTelefonos.getModel()).getRowCount();
+        for (int i = 0; i < numero; i++) {
+            ((DefaultTableModel)tblTelefonos.getModel()).removeRow(0);
+        }
+        
+        for (int i = 0; i < telefonos.size(); i++) {
+            ((DefaultTableModel)tblTelefonos.getModel()).addRow(new Object[]{
+                telefonos.get(i).getTipo(),
+                telefonos.get(i).getNumero()
+            });
+        }
+    }
+
+    public void agregarTelefono(TipoTelefono tipoTelefono, String numero) {
+        if(telefonos == null){
+            telefonos = new ArrayList<>();
+        }
+        telefonos.add(new Telefono(tipoTelefono, numero));
     }
 }

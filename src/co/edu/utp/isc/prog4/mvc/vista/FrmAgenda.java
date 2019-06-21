@@ -6,23 +6,25 @@
 package co.edu.utp.isc.prog4.mvc.vista;
 
 import co.edu.utp.isc.prog4.mvc.controlador.AgendaControlador;
+import co.edu.utp.isc.prog4.mvc.modelo.Contacto;
 import co.edu.utp.isc.prog4.mvc.modelo.Telefono;
+import co.edu.utp.isc.prog4.mvc.modelo.TipoTelefono;
 import java.awt.CardLayout;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author utp
  */
-public class FrmAgenda extends javax.swing.JFrame {
+public class FrmAgenda extends javax.swing.JFrame implements FormularioVisitador {
 
     /**
      * Creates new form Fr
      */
     public FrmAgenda() {
         initComponents();
-        setSize(800,600);
-        setLocationRelativeTo(null);
+        iniciarFormulario();
     }
 
     /**
@@ -39,16 +41,17 @@ public class FrmAgenda extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         btnEliminar = new javax.swing.JButton();
+        btnGuardarArchivo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblContactos = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtAlias = new javax.swing.JTextField();
         pnlCardTelefonos = new javax.swing.JPanel();
-        pnlNuevoTelefono = new co.edu.utp.isc.prog4.mvc.vista.PnlNuevoTelefono();
         pnlTelefonos = new co.edu.utp.isc.prog4.mvc.vista.PnlTelefonos();
+        pnlNuevoTelefono = new co.edu.utp.isc.prog4.mvc.vista.PnlNuevoTelefono();
         btnAgregar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -72,20 +75,38 @@ public class FrmAgenda extends javax.swing.JFrame {
         btnEliminar.setText("Eliminar");
         jPanel4.add(btnEliminar);
 
+        btnGuardarArchivo.setText("Enviar Archivo");
+        btnGuardarArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarArchivoActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnGuardarArchivo);
+
         jPanel2.add(jPanel4, java.awt.BorderLayout.PAGE_END);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblContactos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Nombre", "Alias"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblContactos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblContactosMouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblContactos);
 
         jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
@@ -96,8 +117,8 @@ public class FrmAgenda extends javax.swing.JFrame {
         jLabel2.setText("Alias");
 
         pnlCardTelefonos.setLayout(new java.awt.CardLayout());
-        pnlCardTelefonos.add(pnlNuevoTelefono, "formulario");
         pnlCardTelefonos.add(pnlTelefonos, "lista");
+        pnlCardTelefonos.add(pnlNuevoTelefono, "formulario");
 
         btnAgregar.setText("Agregar");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
@@ -156,20 +177,38 @@ public class FrmAgenda extends javax.swing.JFrame {
     private void btnNuevoContactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoContactoActionPerformed
         txtAlias.setText("");
         txtNombre.setText("");
-        ((CardLayout)pnlCardTelefonos.getLayout()).show(pnlCardTelefonos, "lista");
-        
+        tblContactos.clearSelection();
+        cambiarTarjeta("formulario");
+
         pnlTelefonos.limpiar();
-        txtNombre.requestFocus();                
+        txtNombre.requestFocus();
     }//GEN-LAST:event_btnNuevoContactoActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         String nombre = txtNombre.getText().trim();
         String alias = txtAlias.getText().trim();
         List<Telefono> telefonos = pnlTelefonos.getLista();
-        
-        AgendaControlador agenda = AgendaControlador.getInstance();
-        agenda.agregarContacto(nombre, alias, telefonos);
+
+        AgendaControlador.getInstance()
+                .agregarContacto(tblContactos.getSelectedRow(),
+                        nombre, alias, telefonos);
+        cargarLista();
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void tblContactosMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblContactosMouseReleased
+        if(evt.getClickCount() >= 2){
+            Contacto contacto = AgendaControlador.getInstance().getContacto(tblContactos.getSelectedRow());
+            txtNombre.setText(contacto.getNombre());
+            txtAlias.setText(contacto.getAlias());
+            cambiarTarjeta("lista");
+            pnlTelefonos.setLista(contacto.getTelefonos());
+            txtNombre.requestFocus();
+        }
+    }//GEN-LAST:event_tblContactosMouseReleased
+
+    private void btnGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarArchivoActionPerformed
+        AgendaControlador.getInstance().guardarContactosArchivo();
+    }//GEN-LAST:event_btnGuardarArchivoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -202,16 +241,15 @@ public class FrmAgenda extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmAgenda().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmAgenda().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnGuardarArchivo;
     private javax.swing.JButton btnNuevoContacto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -220,11 +258,52 @@ public class FrmAgenda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JPanel pnlCardTelefonos;
     private co.edu.utp.isc.prog4.mvc.vista.PnlNuevoTelefono pnlNuevoTelefono;
     private co.edu.utp.isc.prog4.mvc.vista.PnlTelefonos pnlTelefonos;
+    private javax.swing.JTable tblContactos;
     private javax.swing.JTextField txtAlias;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
+
+    private void iniciarFormulario() {
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+
+        pnlTelefonos.setFormulario(this);
+        pnlNuevoTelefono.setFormulario(this);
+
+        cargarLista();
+        btnNuevoContactoActionPerformed(null);
+    }
+
+    @Override
+    public void cambiarTarjeta(String tarjeta) {
+        if (tarjeta.equals("formulario")) {
+            pnlNuevoTelefono.limpiarCampos();
+        } else if (tarjeta.equals("lista")) {
+            pnlTelefonos.cargarLista();
+        }
+        ((CardLayout) pnlCardTelefonos.getLayout()).show(pnlCardTelefonos, tarjeta);
+    }
+
+    @Override
+    public void agregarTelefono(TipoTelefono tipoTelefono, String numero) {
+        pnlTelefonos.agregarTelefono(tipoTelefono, numero);
+    }
+
+    private void cargarLista() {
+        int numero = ((DefaultTableModel)tblContactos.getModel()).getRowCount();
+        for (int i = 0; i < numero; i++) {
+            ((DefaultTableModel)tblContactos.getModel()).removeRow(0);
+        }
+        
+        List<Contacto> contactos = AgendaControlador.getInstance().getContactos();
+        for (int i = 0; i < contactos.size(); i++) {
+            ((DefaultTableModel)tblContactos.getModel()).addRow(new Object[]{
+                contactos.get(i).getNombre(),
+                contactos.get(i).getAlias()
+            });
+        }
+    }
 }
